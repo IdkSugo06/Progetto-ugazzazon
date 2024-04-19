@@ -45,7 +45,7 @@ class GestoreProdottiNovita:
         self.__posizioneMouseB1Premuto = [0,0]
         self.__mousePremuto = False
         #Creo una variabile per controllare se si è scorso troppo, in modo da evitare che tutti i widget escano dallo schermo e rimanga bianco
-        self.centroRelativo = 0 #In pixel
+        self.centroRelativo = width/2 + padx/2 #In pixel
         self.velocitaCentroRelativo = 0 #In pixel/s
 
         #Lego gli eventi per rilevare i trascinamenti

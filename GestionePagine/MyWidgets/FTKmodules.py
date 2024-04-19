@@ -3,3 +3,5 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from Utility.FUtility import *
 from math import *
+
+from GestioneProdotti.FCaratteristicheProdotto import *

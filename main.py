@@ -5,10 +5,14 @@ running = True
 def Update():
     lastTime = time.time()
     while GestoreVariabiliGlobali.IGetRunning():
+
+        if MyEventHandler.CheckFatalErrorOccurred():
+            Quit()
+            return 
+        
         currentTime = time.time()
         GestorePagine.IUpdatePaginaCorrente(currentTime - lastTime)
         lastTime = currentTime
-        time.sleep(0.001)
         
 def Start():
     t = Thread(target=Update)
@@ -17,7 +21,7 @@ def Start():
     GestorePagine.IMainLoop()
     t.join()
 
-def Quit(event):
+def Quit(tkInterEvent = None):
     GestorePagine.IGetWindow().destroy()
     GestoreVariabiliGlobali.ISetRunning(False)
     

@@ -1,33 +1,33 @@
 from GestionePagine.FGestorePagine import *
 
-#PaginaHome sarà una delle molte pagine derivate da PaginaGenerica
+#PaginaRicercaProdotto sarà una delle molte pagine derivate da PaginaGenerica
 #Verranno salvate e caricate quando necessario in una lista nel gestorePagine
 #(useremo il polimorfismo)
-class PaginaHome(PaginaGenerica): #Singleton
+class PaginaRicercaProdotto(PaginaGenerica): #Singleton
     #Creo un'istanza statica
-    paginaHome = None
+    paginaRicercaProdotto = None
     UPDATE_FISICI_OGNI_UPDATE_GRAFICO = 8
 
     # INTERFACCE
     @staticmethod
     def Init(): #Inizializzo l'istanza statica (il costruttore aggiungerà l'istanza statica alla lista nel gestorePagine)
         #Se l'istanza non è ancora stata creata, la creo
-        if PaginaHome.paginaHome == None:
-            PaginaHome.paginaHome = PaginaHome()
+        if PaginaRicercaProdotto.paginaRicercaProdotto == None:
+            PaginaRicercaProdotto.paginaRicercaProdotto = PaginaRicercaProdotto()
     @staticmethod
-    def GetPaginaHome(): #Metodo per accedere all'istanza statica
+    def GetPaginaRicercaProdotto(): #Metodo per accedere all'istanza statica
         #Se l'istanza non è ancora stata creata, la creo
-        if PaginaHome.paginaHome == None:
-            PaginaHome.paginaHome = PaginaHome()
+        if PaginaRicercaProdotto.paginaRicercaProdotto == None:
+            PaginaRicercaProdotto.paginaRicercaProdotto = PaginaRicercaProdotto()
         #Ritorno l'istanza statica
-        return PaginaHome.paginaHome 
+        return PaginaRicercaProdotto.paginaRicercaProdotto 
     
     # COSTRUTTORE
     def __init__(self): #Definisco il layout e aggiungo la pagina al gestorePagine
         #Aggiungo poi la pagina al gestorePagine
-        PaginaGenerica.AggiungiPagina("home")
+        PaginaGenerica.AggiungiPagina("ricercaProdotto")
         GestorePagine.IAddPagina(self)
-        self.physicsUpdateSinceGraphicUpdate = PaginaHome.UPDATE_FISICI_OGNI_UPDATE_GRAFICO
+        self.physicsUpdateSinceGraphicUpdate = PaginaRicercaProdotto.UPDATE_FISICI_OGNI_UPDATE_GRAFICO
 
         #Definisco il layout della pagina
         #Creo il frame principale
@@ -60,7 +60,7 @@ class PaginaHome(PaginaGenerica): #Singleton
 
         self.cCanvasLogo = tk.Canvas(master = self.fFrameLogo) #Creo il logo in alto a sinistra
         self.cCanvasLogo.grid(row = 0, column = 0, sticky = "nsew") 
-        self.myImgLogo = MyImageTK(self.cCanvasLogo, LOGO_PATH)
+        self.myImgLogo = MyImageButton(self.cCanvasLogo, command = self.ImpostaPaginaHome, path = LOGO_PATH)        
         self.myImgLogo.Resize((1/18) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[0],
                               (1/18) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[0])
         self.myImgLogo.Show()
@@ -112,7 +112,7 @@ class PaginaHome(PaginaGenerica): #Singleton
         self.fFramePulsanteAccesso.rowconfigure(3, weight = 1)
         self.fFramePulsanteAccesso.rowconfigure(4, weight = 15)
         #Creo il pulsante di accesso e lo ancoro
-        self.bPulsanteAccesso = ttk.Button(master = self.fFramePulsanteAccesso, command = PaginaHome.ImpostaPaginaAccesso)
+        self.bPulsanteAccesso = ttk.Button(master = self.fFramePulsanteAccesso, command = PaginaRicercaProdotto.ImpostaPaginaAccesso)
         self.bPulsanteAccesso.grid(row = 1, column = 1, columnspan = 3, rowspan=3, sticky = "nsew")
         #Un immagine bottone per mostrarne il funzionamento
         self.fFrameImmagineBottoneAcesso = tk.Frame(master = self.fFramePulsanteAccesso, bg = "blue")
@@ -143,7 +143,7 @@ class PaginaHome(PaginaGenerica): #Singleton
         self.fFramePulsanteCarrello.rowconfigure(3, weight = 1)
         self.fFramePulsanteCarrello.rowconfigure(4, weight = 4)
         #Creo il pulsante di accesso e lo ancoro
-        self.bPulsanteCarrello = ttk.Button(master = self.fFramePulsanteCarrello, command = PaginaHome.ImpostaPaginaCarrello)
+        self.bPulsanteCarrello = ttk.Button(master = self.fFramePulsanteCarrello, command = PaginaRicercaProdotto.ImpostaPaginaCarrello)
         self.bPulsanteCarrello.grid(row = 1, column = 1, columnspan=3, rowspan=3, sticky = "nsew")
         #Un immagine bottone per mostrarne il funzionamento
         self.fFrameImmagineBottoneCarrello = tk.Frame(master = self.fFramePulsanteCarrello)
@@ -191,22 +191,13 @@ class PaginaHome(PaginaGenerica): #Singleton
                                                 height = GestoreVariabiliGlobali.IGetDimensioniFinestra()[1] * 3)
 
 
-        # CLASSI AGGIUNTIVE
-        #Creo il gestore dei prodotti novita
-        self.gestoreProdottiNovita = GestoreProdottiNovita(master = self.fFrameScorrevoleCanvasInferiore, 
-                                            numeroProdotti = 6,
-                                            centerx = (1/2) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[0], 
-                                            centery = (1/4) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[1],
-                                            width = (1/4.5) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[0],
-                                            height = (1/2.8) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[1],
-                                            padx = (1/23) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[0])
-        
-        #Creo il gestore dei prodotti novita
+        # CLASSI AGGIUNTIVE       
+        #Creo il gestore dei prodotti cercati
         self.gestoreRiquadriProdotti = GestoreRiquadriProdotti(master = self.fFrameScorrevoleCanvasInferiore, 
                                             numeroColonne = 4,
                                             numeroRighe = 6,
                                             centerx = (1/2) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[0] + 50, 
-                                            topy = (2/3) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[1],
+                                            topy = (1/22) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[1],
                                             width = (1/7.5) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[0],
                                             height = (1/4.2) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[1],
                                             padx = (1/25) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[0],
@@ -215,7 +206,7 @@ class PaginaHome(PaginaGenerica): #Singleton
         #Creo il gestore filtri
         self.gestoreFiltri = GestoreFiltri(master = self.fFrameScorrevoleCanvasInferiore, 
                                             leftmostpoint = 0,
-                                            topy = (2/3) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[1],
+                                            topy = (1/22) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[1],
                                             width = (1/6) * GestoreVariabiliGlobali.IGetDimensioniFinestra()[0],
                                             height = 40)
 
@@ -224,7 +215,6 @@ class PaginaHome(PaginaGenerica): #Singleton
         #Bindo gli eventi per scorrere
         self.cCanvasParteInferiore.bind("<MouseWheel>", lambda event : self.cCanvasParteInferiore.yview_scroll(int(-event.delta / 60), "units"))
         self.fFrameScorrevoleCanvasInferiore.bind("<MouseWheel>", lambda event : self.cCanvasParteInferiore.yview_scroll(int(-event.delta / 60), "units"))
-        self.gestoreProdottiNovita.myBind("<MouseWheel>", lambda event : self.cCanvasParteInferiore.yview_scroll(int(-event.delta / 60), "units"))
         self.gestoreRiquadriProdotti.myBind("<MouseWheel>", lambda event : self.cCanvasParteInferiore.yview_scroll(int(-event.delta / 60), "units"))
         self.gestoreFiltri.myBind("<MouseWheel>", lambda event : self.cCanvasParteInferiore.yview_scroll(int(-event.delta / 60), "units"))
     
@@ -240,15 +230,13 @@ class PaginaHome(PaginaGenerica): #Singleton
         self.fFramePrincipale.grid_forget()
     def UpdatePagina(self, deltaTime):
         #Update the physics
-        self.gestoreProdottiNovita.UpdatePhysics(deltaTime)
         self.gestoreRiquadriProdotti.UpdatePhysics(deltaTime)
 
         #Every 8 updates update the graphics
-        if self.physicsUpdateSinceGraphicUpdate >= PaginaHome.UPDATE_FISICI_OGNI_UPDATE_GRAFICO:
+        if self.physicsUpdateSinceGraphicUpdate >= PaginaRicercaProdotto.UPDATE_FISICI_OGNI_UPDATE_GRAFICO:
             self.physicsUpdateSinceGraphicUpdate = 0
 
             #Update the graphics
-            self.gestoreProdottiNovita.UpdateGraphics()
             self.gestoreRiquadriProdotti.UpdateGraphics()
             self.gestoreFiltri.UpdateGraphics()
         self.physicsUpdateSinceGraphicUpdate += 1
@@ -259,23 +247,23 @@ class PaginaHome(PaginaGenerica): #Singleton
     
     #Cambio pagine
     @staticmethod
+    def ImpostaPaginaHome(tkEvent = None): 
+        GestorePagine.ICaricaPagina(PaginaGenerica.GetIdPagina("home"))
+    @staticmethod
     def ImpostaPaginaAccesso(tkEvent = None): 
         GestorePagine.ICaricaPagina(PaginaGenerica.GetIdPagina("accesso"))
     @staticmethod
     def ImpostaPaginaCarrello(tkEvent = None): 
         GestorePagine.ICaricaPagina(PaginaGenerica.GetIdPagina("carrello"))  
-    @staticmethod
-    def ImpostaPaginaRicercaProdotti(tkEvent = None): 
-        GestorePagine.ICaricaPagina(PaginaGenerica.GetIdPagina("ricercaProdotto"))  
-    
+
+
     #Altre funzioni
     #Da implementare
     def ConfermaRicerca(self, tkEvent = None): 
-        PaginaHome.ImpostaPaginaRicercaProdotti()
+        pass
     def AggiornaArticoliConsigliati(self): 
         self.gestoreRiquadriProdotti.AggiornaArticoliConsigliati()
-        self.gestoreProdottiNovita.AggiornaArticoliConsigliati()
     
-#Inizializzo la pagina home
-PaginaHome.Init()
+#Inizializzo la pagina ricercaProdotto
+PaginaRicercaProdotto.Init()
 

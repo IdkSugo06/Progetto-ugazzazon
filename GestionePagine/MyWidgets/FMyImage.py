@@ -42,37 +42,60 @@ class MyImageTK:
             #ogni volta dall'immagine originale, così da non perdere qualità
             self.resizedImage = Image.open(path)
             self.imageTk = ImageTk.PhotoImage(self.originalImage)
-            self.parentCanvas.bind("<Configure>", self.Resize)
+            self.parentCanvas.bind("<Configure>", self.ResizeEvent)
 
             #Creo l'istanza così da poterla cancellare nel prossimo update
             self.imgThisFrameIstance = self.parentCanvas.create_image(self.canvasWidth/2, self.canvasHeight/2, image = self.immagineTKridimensionamentoAttuale, anchor = "center")
         except: 
-            LOG.log("È stata rilevata una path non valida", 2)
+            LOG.log("È stata rilevata una path non valida: " + str(path), 2)
         
-    def Show(self):
+    def Show(self, _anchor = "center"):
         #Cancello l'immagine precedente e carico la nuova, lasciandone sempre in vista due in modo da evitare il "flickering"
         self.parentCanvas.delete(self.imgLastFrameIstance)
         self.imgLastFrameIstance = self.imgThisFrameIstance
-        self.imgThisFrameIstance = self.parentCanvas.create_image(self.canvasWidth/2, self.canvasHeight/2, image = self.immagineTKridimensionamentoAttuale, anchor = "center")
+        self.imgThisFrameIstance = self.parentCanvas.create_image(self.canvasWidth/2, self.canvasHeight/2, image = self.immagineTKridimensionamentoAttuale, anchor = _anchor)
     
-    def Resize(self, event):
+
+    def Resize(self, width : int, height : int):
         #Cambio gli attributi e salvo i nuovi
-        self.canvasWidth = event.width
-        self.canvasHeight = event.height
-        self.canvasAspectRatio = event.width / event.height
+        self.canvasWidth = width
+        self.canvasHeight = height
+        self.canvasAspectRatio = width / height
 
         #Controllo l'aspect ratio e ridimensiono l'immagine in base a quello
         if self.canvasAspectRatio < self.aspectRatio:
-            dim = [(int) (event.width * self.zoomIstantaneo),
-                   (int) (event.height * self.zoomIstantaneo / self.aspectRatio)]
+            dim = [(int) (width * self.zoomIstantaneo),
+                   (int) (height * self.zoomIstantaneo / self.aspectRatio)]
         else:
-            dim = [(int) (event.width * self.zoomIstantaneo * self.aspectRatio),
-                   (int) (event.height * self.zoomIstantaneo)]
+            dim = [(int) (width * self.zoomIstantaneo * self.aspectRatio),
+                   (int) (height * self.zoomIstantaneo)]
             
         #Ricalcolo l'immagine e l'immagine tk
         self.resizedImage = self.originalImage.resize(dim)
         self.immagineTKridimensionamentoPrecedente = self.immagineTKridimensionamentoAttuale
         self.immagineTKridimensionamentoAttuale = ImageTk.PhotoImage(self.resizedImage)
+
+    def ChangeImage(self, newPath : str): #Necessita di resize e show per essere cambiata
+        try: 
+            #Importo l'immagine e ne calcolo l'aspect ratio
+            self.originalImage = Image.open(newPath)
+            self.aspectRatio = self.originalImage.size[0] / self.originalImage.size[1]
+
+            #Riscalo l'immagine per non avere problemi di prestazioni 
+            self.originalImage.resize((200,200)) 
+
+            #Creo una variabile per contenere una copia dell'immagine riscalata e poter attingere 
+            #ogni volta dall'immagine originale, così da non perdere qualità
+            self.resizedImage = Image.open(newPath)
+            self.imageTk = ImageTk.PhotoImage(self.originalImage)
+
+            #Creo l'istanza così da poterla cancellare nel prossimo update
+            self.imgThisFrameIstance = self.parentCanvas.create_image(self.canvasWidth/2, self.canvasHeight/2, image = self.immagineTKridimensionamentoAttuale, anchor = "center")
+        except: 
+            LOG.log("È stata rilevata una path non valida: " + str(newPath), 2)
+
+    def ResizeEvent(self, event):
+        self.Resize(event.width, event.height)
 
     def SetZoomIstantaneo(self, zoomIstantaneo : float):
         self.zoomIstantaneo = zoomIstantaneo

@@ -1,0 +1,4 @@
+Genere{0:"uomo",1:"donna"}
+Colore{0:"rosso",1:"verde",2:"blue"}
+Tipo indumento{0:"maglia",1:"cappello",2:"pantaloni"}
+Stagione{0:"primavera",1:"estate",2:"autunno",3:"inverno"}

@@ -38,7 +38,6 @@ class ProdottoNovita(RiquadroProdotto):
         coeff = abs_dZoom**4
         d = 0.2
         v = -19.65 
-        print(exp(-v*(deltaTime + d)))
         self.zoomAttualeMouse += segno * self.zoomRichiestoMouse*(coeff / (coeff + exp(v*(deltaTime + d))))
 
     def UpdateGraphics(self):

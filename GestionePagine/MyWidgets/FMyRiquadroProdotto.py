@@ -1,4 +1,5 @@
 from GestionePagine.MyWidgets.FMyImage import *
+from GestioneProdotti.FMagazzino import *
 
 #Frame minimamente animato
 #Classe derivata da una classe di tkInter
@@ -106,7 +107,7 @@ class RiquadroProdotto(tk.Frame):
         self.zoomAttualeMouse = 0.98
         self.zoomRichiestoMouse = 1
 
-
+    # METODI UPDATE
     def UpdatePhysics(self, deltaTime : float):
         #Calcolo lo zoom
         dZoom = (self.zoomRichiestoMouse - self.zoomAttualeMouse) #differenza di zoom
@@ -116,7 +117,6 @@ class RiquadroProdotto(tk.Frame):
         coeff = abs_dZoom**4
         d = 0.2
         v = -19.65 
-        print(exp(-v*(deltaTime + d)))
         self.zoomAttualeMouse += segno * self.zoomRichiestoMouse*(coeff / (coeff + exp(v*(deltaTime + d))))
 
 
@@ -130,6 +130,10 @@ class RiquadroProdotto(tk.Frame):
                        height = self.height * self.zoomAttualeMouse, 
                        width = self.width * self.zoomAttualeMouse, 
                        anchor ="center")
+    # METODI
+    def AssociaProdotto(self, prodotto : Prodotto):
+        self
+
 
     # METODI EVENTI
     #Aumenta lo zoom
